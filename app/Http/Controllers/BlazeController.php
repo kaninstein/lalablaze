@@ -126,6 +126,7 @@ class BlazeController extends Controller
 
                 if ($verifyFirst == 0 && $verifySecond ==0) {
 
+                    $minuteBaseAdd = (($roll->number == 0) ? 5 : $roll->number);
                     $minuteRollAdd = (($duplicatedRoll->number == 0) ? 5 : $duplicatedRoll->number);
 
                     //Number
@@ -141,7 +142,7 @@ class BlazeController extends Controller
                         'base_blank_id' => $roll->id,
                         'base_color_id' => $duplicatedRoll->id,
                         'count_mode' => 2,
-                        'sign_time' => Carbon::parse($roll->roll_time)->addMinutes(($minuteRollAdd + $roll->number))
+                        'sign_time' => Carbon::parse($roll->roll_time)->addMinutes(($minuteRollAdd + $minuteBaseAdd))
                     ]);
 
                     //Multiply
@@ -149,7 +150,7 @@ class BlazeController extends Controller
                         'base_blank_id' => $roll->id,
                         'base_color_id' => $duplicatedRoll->id,
                         'count_mode' => 3,
-                        'sign_time' => Carbon::parse($roll->roll_time)->addMinutes(($minuteRollAdd * $roll->number))
+                        'sign_time' => Carbon::parse($roll->roll_time)->addMinutes(($minuteRollAdd * $minuteBaseAdd))
                     ]);
 
                 }
