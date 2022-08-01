@@ -138,12 +138,9 @@
                     @if($sign->count_mode == 1)
                         + {{ $sign->getColor()->number }}
                     @elseif($sign->count_mode == 2)
-                    + 5
+                    + {{ ($sign->number + $sign->getColor()->number) }}
                     @elseif($sign->count_mode == 3)
-                    5 + {{ $sign->getColor()->number }}
-                    @elseif($sign->count_mode == 4)
-                        5 x  {{ $sign->getColor()->number }}
-                    @endif
+                    + {{ ($sign->number * $sign->getColor()->number) }}
                 </td>
                 <td class="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400 text-center">
                     <div class="flex flex-row justify-center space-x-8">
