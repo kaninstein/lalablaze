@@ -51,5 +51,26 @@ class Roll extends Model
             ->where('roll_time', '>', Carbon::parse($this->roll_time)->subMinute()->format('Y-m-d H:i:00'));
 
         return $minuteRolls;
+
+    }
+
+    public function getDuplicatedRolls()
+    {
+
+        $duplicatedRoll = $this
+            ->whereBetween('roll_time',[Carbon::parse($this->roll_time)->format('Y-m-d H:i:00'), Carbon::parse($this->roll_time)->format('Y-m-d H:i:59')])
+            ->where('id', '<>', $this->id)->first();
+
+
+        if(($duplicatedRoll) && $duplicatedRoll->number == $this->number){
+
+            return $duplicatedRoll;
+
+        } else {
+
+            return false;
+
+        }
+
     }
 }

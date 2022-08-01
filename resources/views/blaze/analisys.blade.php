@@ -152,8 +152,16 @@
                                 href="{{ url("/blank/{$sign->base_blank_id}") }}"
                                 target="_blank">
                                 <div class="roulette-tile">
-                                    <div class="sm-box white shaddow-lg">
-                                        <img alt="0" src="{{ asset('svg/blaze.svg') }}">
+                                    <div
+                                        class="sm-box {{ (($sign->getColor()->color == 0) ? 'white' : (($sign->getColor()->color == 1) ? 'red' : 'black')) }}">
+                                        @if($sign->getColor()->color == 0)
+                                            <img alt="0" src="{{ asset('svg/blaze.svg') }}">
+                                        @else
+
+                                            <div class="number">
+                                                {{ $sign->getColor()->number }}
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                             </a>

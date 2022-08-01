@@ -99,60 +99,57 @@ class BlazeController extends Controller
     public function calc()
     {
 
-        $rollZeros = $this->roll
-            ->where('number', 0)
-            ->orderBy('roll_time', 'asc')
+        $rolls = $this->roll
+            ->orderBy('roll_time', 'desc')
             ->get();
 
 
-        foreach ($rollZeros as $rollZero) {
+        foreach ($rolls as $roll) {
 
-            $minuteRoll = $this->roll->find($rollZero->id)->getMinuteRoll();
+            $duplicatedRoll = $this->roll->find($roll->id)->getDuplicatedRolls();
 
 
-            if ($minuteRoll->count() > 0){
+            if ($duplicatedRoll){
 
-                $minuteRollSign = $minuteRoll->first();
 
-                $verifyRoll = $this->sign
-                    ->where('base_blank_id', $rollZero->id)
-                    ->where('base_color_id', $minuteRollSign->id)
+                $verifyFirst = $this->sign
+                    ->where('base_blank_id', $roll->id)
+                    ->where('base_color_id', $duplicatedRoll->id)
                     ->count();
 
-                if ($verifyRoll == 0) {
+                $verifySecond = $this->sign
+                    ->where('base_blank_id', $duplicatedRoll->id)
+                    ->where('base_color_id', $roll->id)
+                    ->count();
 
-                    $minuteRollAdd = (($minuteRollSign->number == 0) ? 5 : $minuteRollSign->number);
+
+
+                if ($verifyFirst == 0 && $verifySecond ==0) {
+
+                    $minuteRollAdd = (($duplicatedRoll->number == 0) ? 5 : $duplicatedRoll->number);
 
                     //Number
                     $this->sign->create([
-                        'base_blank_id' => $rollZero->id,
-                        'base_color_id' => $minuteRollSign->id,
+                        'base_blank_id' => $roll->id,
+                        'base_color_id' => $duplicatedRoll->id,
                         'count_mode' => 1,
-                        'sign_time' => Carbon::parse($rollZero->roll_time)->addHours($minuteRollAdd)
-                    ]);
-
-                    //Five
-                    $this->sign->create([
-                        'base_blank_id' => $rollZero->id,
-                        'base_color_id' => $minuteRollSign->id,
-                        'count_mode' => 2,
-                        'sign_time' => Carbon::parse($rollZero->roll_time)->addHours(5)
+                        'sign_time' => Carbon::parse($roll->roll_time)->addMinutes($minuteRollAdd)
                     ]);
 
                     //Add
                     $this->sign->create([
-                        'base_blank_id' => $rollZero->id,
-                        'base_color_id' => $minuteRollSign->id,
-                        'count_mode' => 3,
-                        'sign_time' => Carbon::parse($rollZero->roll_time)->addHours(($minuteRollAdd + 5))
+                        'base_blank_id' => $roll->id,
+                        'base_color_id' => $duplicatedRoll->id,
+                        'count_mode' => 2,
+                        'sign_time' => Carbon::parse($roll->roll_time)->addMinutes(($minuteRollAdd + $roll->number))
                     ]);
 
                     //Multiply
                     $this->sign->create([
-                        'base_blank_id' => $rollZero->id,
-                        'base_color_id' => $minuteRollSign->id,
-                        'count_mode' => 4,
-                        'sign_time' => Carbon::parse($rollZero->roll_time)->addHours(($minuteRollAdd * 5))
+                        'base_blank_id' => $roll->id,
+                        'base_color_id' => $duplicatedRoll->id,
+                        'count_mode' => 3,
+                        'sign_time' => Carbon::parse($roll->roll_time)->addMinutes(($minuteRollAdd * $roll->number))
                     ]);
 
                 }
