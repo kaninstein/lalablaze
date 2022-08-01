@@ -138,9 +138,9 @@
                     @if($sign->count_mode == 1)
                         + {{ $sign->getColor()->number }}
                     @elseif($sign->count_mode == 2)
-                    + {{ ($sign->number + $sign->getColor()->number) }}
+                    + {{ ($sign->getBlank() + $sign->getColor()->number) }}
                     @elseif($sign->count_mode == 3)
-                    + {{ ($sign->number * $sign->getColor()->number) }}
+                    + {{ ($sign->getBlank() * $sign->getColor()->number) }}
                     @endif
                 </td>
                 <td class="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400 text-center">
